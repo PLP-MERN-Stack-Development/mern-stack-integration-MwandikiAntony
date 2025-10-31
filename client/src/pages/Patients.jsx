@@ -1,36 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-export default function AddPatient() {
-  const [form, setForm] = useState({ name: "", age: "", gender: "", condition: "", notes: "" });
+export default function Patients() {
   const { token } = useAuth();
-  const navigate = useNavigate();
+  const [patients, setPatients] = useState([]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await API.post("/patients", form, { headers: { Authorization: `Bearer ${token}` } });
-    navigate("/");
-  };
+  useEffect(() => {
+    const fetchPatients = async () => {
+      const res = await API.get("/patients", { headers: { Authorization: `Bearer ${token}` } });
+      setPatients(res.data);
+    };
+    fetchPatients();
+  }, [token]);
 
   return (
-    <div className="flex justify-center items-center h-full w-full bg-gray-100">
-      <form className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md space-y-6" onSubmit={handleSubmit}>
-        <h2 className="text-2xl font-bold text-center text-blue-600">Add Patient</h2>
-        {["name", "age", "gender", "condition", "notes"].map((f) => (
-          <div key={f}>
-            <label className="block text-gray-700 mb-1">{f.charAt(0).toUpperCase() + f.slice(1)}</label>
-            <input
-              placeholder={f}
-              onChange={(e) => setForm({ ...form, [f]: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              required
-            />
-          </div>
-        ))}
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Add</button>
-      </form>
+    <div className="min-h-screen w-full bg-gray-100 p-6 flex flex-col">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-gray-800">Patients</h2>
+        <Link
+          to="/add"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Add Patient
+        </Link>
+      </div>
+
+      <div className="flex-1 overflow-y-auto bg-white shadow-lg rounded-xl p-6 space-y-4">
+        {patients.length === 0 ? (
+          <p className="text-gray-500 text-center">No patients found.</p>
+        ) : (
+          <ul className="space-y-3">
+            {patients.map((p) => (
+              <li
+                key={p._id}
+                className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50 transition"
+              >
+                <div>
+                  <p className="font-semibold text-gray-800">{p.name}</p>
+                  <p className="text-gray-500 text-sm">
+                    Age: {p.age} | Condition: {p.condition}
+                  </p>
+                </div>
+                <div className="text-gray-400 text-sm">{p.notes}</div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

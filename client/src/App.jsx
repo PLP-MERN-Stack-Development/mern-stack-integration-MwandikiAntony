@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Patients from './pages/Patients'
-import AddPatient from './pages/AddPatient'
+import AddPatient from './pages/addPatient'
 import Navbar from './components/Navbar'
 import { useAuth } from './context/AuthContext'
 
@@ -11,11 +11,11 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navbar stays at the top */}
+      {/* Fixed Navbar */}
       <Navbar />
 
-      {/* Content area fills remaining space */}
-      <div className="flex-1">
+      {/* Content area: full height minus Navbar */}
+      <div className="flex-1 pt-20"> {/* pt-20 = padding-top to avoid Navbar overlap */}
         <Routes>
           <Route
             path="/"

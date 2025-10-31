@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full bg-blue-600 text-white shadow-md z-50">
       <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="text-xl font-bold">
-          <Link to="/">Health App</Link>
+          <Link to="/">Home</Link>
         </div>
 
         <div className="space-x-4">
